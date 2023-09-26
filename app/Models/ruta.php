@@ -12,8 +12,8 @@ class ruta extends Model
     public function conexiones() {
         return $this->hasMany(conexion::class);
     }
-    
-    public function ubicaciones() {
-        return $this->hasMany(ubicacion::class);
-    }
+
+    protected $fillable = [
+        'nodo_inicial',
+    ];
 }

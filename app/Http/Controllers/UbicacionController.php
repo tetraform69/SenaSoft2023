@@ -9,58 +9,42 @@ use App\Http\Requests\UpdateubicacionRequest;
 class UbicacionController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Mostrar ubicaciones.
      */
-    public function index()
+    public function read()
     {
-        //
+        if(isset($_GET["id"])){
+            return ubicacion::find($_GET["id"]);
+        } else {
+            return ubicacion::all();
+        }
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Crear ubicacion.
      */
-    public function create()
+    public function create(StoreubicacionRequest $request)
     {
-        //
-    }
+        ubicacion::create($request->all());
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreubicacionRequest $request)
-    {
-        //
+        return "ubicacion creada";
     }
-
+    
     /**
-     * Display the specified resource.
-     */
-    public function show(ubicacion $ubicacion)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(ubicacion $ubicacion)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
+     * Actualizar ubicacion.
      */
     public function update(UpdateubicacionRequest $request, ubicacion $ubicacion)
     {
-        //
+        ubicacion::findOrFail($ubicacion->id)->update($request->all());
+        return "ubicacion actualizada";
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Eliminar ubicacion.
      */
-    public function destroy(ubicacion $ubicacion)
+    public function delete(ubicacion $ubicacion)
     {
-        //
+        ubicacion::findOrFail($ubicacion->id)->delete();
+        return "ubicacion eliminada";
     }
 }

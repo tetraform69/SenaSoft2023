@@ -22,7 +22,9 @@ class StoreubicacionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'nombre' => ['string'],
+            'posicionx' => ['integer'],
+            'posiciony' => ['integer'],
         ];
     }
 }

@@ -17,4 +17,11 @@ class conexion extends Model
     public function nodo_b(){
         return $this->belongsTo(User::class, 'ubicacions_id');
     }
+
+    protected $fillable = [
+        'peso',
+        'ruta',
+        'nodo_a',
+        'nodo_b',
+    ];
 }
