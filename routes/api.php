@@ -28,6 +28,6 @@ Route::middleware('api')->group(function () {
     Route::post('/conexion',[ConexionController::class, 'create']);
     Route::get('/conexion',[ConexionController::class, 'read']);
     
-    
+    Route::post('/ruta',[RutaController::class, 'create']);
     Route::get('/ruta',[RutaController::class, 'read']);
 });

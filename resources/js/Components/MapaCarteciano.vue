@@ -2,29 +2,56 @@
     <div class="flex flex-row gap-5">
         <div class="bg-slate-300 mt-4 rounded-md p-3 w-1/5">
             <form>
-                <select name="nodo_A" id="nodo_A" v-model="nodoA" class="rounded-md mb-5 w-full">
+                <select
+                    name="nodo_A"
+                    id="nodo_A"
+                    v-model="nodoA"
+                    class="rounded-md mb-5 w-full"
+                >
                     <option value="0" selected disabled>
                         Seleccione nodo A
                     </option>
-                    <option :value="item" v-for="(item, index) in nodos" :key="index">
+                    <option
+                        :value="item"
+                        v-for="(item, index) in nodos"
+                        :key="index"
+                    >
                         {{ index + 1 }} - {{ item.nombre }}
                     </option>
                 </select>
-                <select name="nodo_B" id="nodo_B" v-model="nodoB" class="rounded-md mb-5 w-full">
+                <select
+                    name="nodo_B"
+                    id="nodo_B"
+                    v-model="nodoB"
+                    class="rounded-md mb-5 w-full"
+                >
                     <option value="0" selected disabled>
                         Seleccione nodo B
                     </option>
-                    <option :value="item2" v-for="(item2, index) in nodos" :key="index">
+                    <option
+                        :value="item2"
+                        v-for="(item2, index) in nodos"
+                        :key="index"
+                    >
                         {{ index + 1 }} - {{ item2.nombre }}
                     </option>
                 </select>
                 <div class="flex flex-row flex justify-center">
-                    <input type="number" v-model="peso" min="1" id="peso" class="rounded-md w-full mb-5"
-                        placeholder="Ingrese Peso (distancia):" />
+                    <input
+                        type="number"
+                        v-model="peso"
+                        min="1"
+                        id="peso"
+                        class="rounded-md w-full mb-5"
+                        placeholder="Ingrese Peso (distancia):"
+                    />
                 </div>
                 <div class="flex flex-row flex justify-center">
-                    <button type="button" @click="agregarConexion"
-                        class="inline-flex items-center px-4 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                    <button
+                        type="button"
+                        @click="agregarConexion"
+                        class="inline-flex items-center px-4 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
+                    >
                         Agregar Conexion
                     </button>
                 </div>
@@ -32,7 +59,13 @@
         </div>
 
         <div class="cintent-plain w-4/5">
-            <canvas id="lienzo1" class="plano" height="700" width="700" @click="openDialog"></canvas>
+            <canvas
+                id="lienzo1"
+                class="plano"
+                height="700"
+                width="700"
+                @click="openDialog"
+            ></canvas>
         </div>
     </div>
 
@@ -40,17 +73,21 @@
         <div class="flex flex-col gap-3">
             <label for="">Nombre de la ubicacion: </label>
             <input v-model="nombre" class="rounded-md" />
-            <label for="">Posicion x: </label>
+            <label for="">Posicion X: </label>
             <input v-model="x" class="rounded-md" />
-            <label for="">Posicion x: </label>
+            <label for="">Posicion Y: </label>
             <input v-model="y" class="rounded-md" />
             <div class="flex gap-3">
-                <button @click="agregarNodos"
-                    class="inline-flex items-center px-4 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                <button
+                    @click="agregarNodos"
+                    class="inline-flex items-center px-4 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
+                >
                     agregar
                 </button>
-                <button @click="dialog.close()"
-                    class="inline-flex items-center px-4 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                <button
+                    @click="dialog.close()"
+                    class="inline-flex items-center px-4 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
+                >
                     cancelar
                 </button>
             </div>
@@ -60,25 +97,42 @@
     <dialog id="nodoInicial" class="rounded-md p-3">
         <div class="flex flex-col gap-3">
             <label for="nodo_inicial">Seleccione nodo Inicial:</label>
-            <select name="nodo_inicial" id="nodo_inicial" v-model="nodoI" class="rounded-md">
-                <option :value="item" v-for="(item, index) in nodos" :key="index">
+            <select
+                name="nodo_inicial"
+                id="nodo_inicial"
+                v-model="nodoI"
+                class="rounded-md"
+            >
+                <option
+                    :value="item"
+                    v-for="(item, index) in nodos"
+                    :key="index"
+                >
                     {{ index + 1 }} - {{ item.nombre }}
                 </option>
             </select>
             <div class="flex gap-3">
-                <button @click="guardarRuta"
-                    class="inline-flex items-center px-4 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">Agregar
-                    Ubicacion</button>
-                <button @click="dialogNodoInicial.close()"
-                    class="inline-flex items-center px-4 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                    cancelar </button>
+                <button
+                    @click="guardarRuta"
+                    class="inline-flex items-center px-4 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
+                >
+                    Agregar Ubicacion
+                </button>
+                <button
+                    @click="dialogNodoInicial.close()"
+                    class="inline-flex items-center px-4 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
+                >
+                    cancelar
+                </button>
             </div>
         </div>
     </dialog>
 
     <div class="flex justify-center mt-4">
-        <button @click="openNodoInicial"
-            class="inline-flex items-center px-4 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+        <button
+            @click="openNodoInicial"
+            class="inline-flex items-center px-4 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
+        >
             Guardar rutas
         </button>
     </div>
@@ -131,8 +185,8 @@ export default {
         drawNode(nodo) {
             var x_cero = 350;
             var y_cero = 350;
-            let xnode = x_cero + (nodo.posicionx * this.grid_size);
-            let ynode = y_cero - (nodo.posiciony * this.grid_size);
+            let xnode = x_cero + nodo.posicionx * this.grid_size;
+            let ynode = y_cero - nodo.posiciony * this.grid_size;
             this.ctx.beginPath();
             this.ctx.arc(xnode, ynode, 2, 0, 2 * Math.PI, false);
             this.ctx.stroke();
@@ -189,20 +243,31 @@ export default {
             console.log(conexion);
             this.ctx.beginPath();
             this.ctx.moveTo(
-                x_cero + (conexion.nodo_a.posicionx * this.grid_size),
-                y_cero - (conexion.nodo_a.posiciony * this.grid_size)
+                x_cero + conexion.nodo_a.posicionx * this.grid_size,
+                y_cero - conexion.nodo_a.posiciony * this.grid_size
             ); // lo ubicó para iniciar el dibujo
             this.ctx.lineTo(
-                x_cero + (conexion.nodo_b.posicionx * this.grid_size),
-                y_cero - (conexion.nodo_b.posiciony * this.grid_size)
+                x_cero + conexion.nodo_b.posicionx * this.grid_size,
+                y_cero - conexion.nodo_b.posiciony * this.grid_size
             ); // trazo la linea hasta este punto
             this.ctx.stroke();
         },
         guardarRuta() {
-            data = {
-                nodo_inicial: this.nodo_inicial,
+            let data = {
+                nodo_inicial: this.nodoI,
                 ubicaciones: this.nodos,
+                conexiones: this.conexiones,
             };
+
+            axios
+                .post("/api/ruta", data)
+                .then((res) => {
+                    console.log(res.data);
+                    
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
         },
         getCanvasHW() {
             let c = document.getElementById("lienzo1");
@@ -211,8 +276,8 @@ export default {
         },
         grid() {
             this.ctx.beginPath();
-            var x_axis_size = this.canvasWidht - (2 * this.grid_size);
-            var y_axis_size = this.canvasHeight - (2 * this.grid_size);
+            var x_axis_size = this.canvasWidht - 2 * this.grid_size;
+            var y_axis_size = this.canvasHeight - 2 * this.grid_size;
             var x_cero = 350;
             var y_cero = 350;
             // Cuadriculas X
@@ -234,11 +299,11 @@ export default {
 
             // Eje x del 0
             this.ctx.beginPath();
-            this.ctx.moveTo(x_cero - (x_axis_size / 2), y_cero);
-            this.ctx.lineTo(x_cero + (x_axis_size / 2), y_cero);
+            this.ctx.moveTo(x_cero - x_axis_size / 2, y_cero);
+            this.ctx.lineTo(x_cero + x_axis_size / 2, y_cero);
             // Eje y del 0
-            this.ctx.moveTo(x_cero, y_cero - (y_axis_size / 2));
-            this.ctx.lineTo(x_cero, y_cero + (y_axis_size / 2));
+            this.ctx.moveTo(x_cero, y_cero - y_axis_size / 2);
+            this.ctx.lineTo(x_cero, y_cero + y_axis_size / 2);
             this.ctx.strokeStyle = "#000";
             this.ctx.lineWidth = 2;
             this.ctx.stroke();
@@ -248,35 +313,51 @@ export default {
 
             // Los de Y
             x = 0;
-            while (x * this.grid_size <= (y_axis_size / 2)) {
+            while (x * this.grid_size <= y_axis_size / 2) {
                 this.ctx.textAlign = "end";
-                this.ctx.fillText(x, x_cero - (this.grid_size / 4), y_cero - (this.grid_size * x));
+                this.ctx.fillText(
+                    x,
+                    x_cero - this.grid_size / 4,
+                    y_cero - this.grid_size * x
+                );
                 x++;
             }
 
             x = 1;
-            while (x * this.grid_size <= (y_axis_size / 2)) {
+            while (x * this.grid_size <= y_axis_size / 2) {
                 this.ctx.textAlign = "end";
-                this.ctx.fillText(-x, x_cero - (this.grid_size / 4), y_cero + (this.grid_size * x));
+                this.ctx.fillText(
+                    -x,
+                    x_cero - this.grid_size / 4,
+                    y_cero + this.grid_size * x
+                );
                 x++;
             }
 
             // Los de X
 
             x = 1;
-            while (x * this.grid_size <= (x_axis_size / 2)) {
+            while (x * this.grid_size <= x_axis_size / 2) {
                 this.ctx.textAlign = "end";
-                this.ctx.fillText(x, x_cero + (this.grid_size * x), y_cero + (this.grid_size / 2));
+                this.ctx.fillText(
+                    x,
+                    x_cero + this.grid_size * x,
+                    y_cero + this.grid_size / 2
+                );
                 x++;
             }
 
             x = 1;
-            while (x * this.grid_size <= (x_axis_size / 2)) {
+            while (x * this.grid_size <= x_axis_size / 2) {
                 this.ctx.textAlign = "end";
-                this.ctx.fillText(-x, x_cero - (this.grid_size * x), y_cero + (this.grid_size / 2));
+                this.ctx.fillText(
+                    -x,
+                    x_cero - this.grid_size * x,
+                    y_cero + this.grid_size / 2
+                );
                 x++;
             }
-        }
+        },
     },
     //Aqui se monta el plano cartesiano en un canvas.
     mounted() {
@@ -286,7 +367,7 @@ export default {
         this.canvas = c;
         this.dialog = document.getElementById("dialog");
         this.dialogNodoInicial = document.getElementById("nodoInicial");
-        this.grid()
+        this.grid();
     },
 };
 </script>
@@ -301,4 +382,5 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-}</style>
+}
+</style>

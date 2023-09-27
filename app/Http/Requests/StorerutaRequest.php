@@ -22,7 +22,6 @@ class StorerutaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nodo_inicial' => ['integer'],
         ];
     }
 }
