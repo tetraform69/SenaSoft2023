@@ -25,4 +25,5 @@ Route::middleware('api')->group(function () {
     Route::post('/nodos',[UbicacionController::class, 'create']);
 
     Route::post('/conexion',[ConexionController::class, 'create']);
+    Route::get('/conexion',[ConexionController::class, 'read']);
 });

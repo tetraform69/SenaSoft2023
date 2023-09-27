@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->integer("peso");
-            $table->unsignedBigInteger('ruta');
+            $table->unsignedBigInteger('ruta')->nullable();
             $table->foreign('ruta')->references('id')->on('rutas');
             $table->unsignedBigInteger('nodo_a');
             $table->foreign('nodo_a')->references('id')->on('ubicacions');
