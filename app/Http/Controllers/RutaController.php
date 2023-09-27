@@ -80,21 +80,21 @@ class RutaController extends Controller
 
         $nodos = [];
 
-        foreach ($ubicaciones as $u) {
+        foreach($ubicaciones as $u){
             $ubicacion = new ubicacion;
-
+            
             $ubicacion->nombre = $u["nombre"];
             $ubicacion->posicionx = $u["posicionx"];
             $ubicacion->posiciony = $u["posiciony"];
-
+            
             $ubicacion->save();
             $nodos[$u["nombre"]] = $ubicacion;
         }
-
+        
         $ruta->nodo_inicial = $nodos[$nodo_inicial["nombre"]]->id;
         $ruta->save();
 
-        foreach ($conexiones as $c) {
+        foreach($conexiones as $c){
             $conexion = new conexion;
 
             $conexion->peso = $c["peso"];
@@ -104,7 +104,7 @@ class RutaController extends Controller
 
             $ruta->conexiones()->save($conexion);
         }
-
+        
         return "ruta creada";
     }
 

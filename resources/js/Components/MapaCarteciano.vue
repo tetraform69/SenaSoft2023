@@ -262,7 +262,7 @@ export default {
             axios
                 .post("/api/ruta", data)
                 .then((res) => {
-                    console.log(res.data);
+                    this.dialogNodoInicial.close()
                     
                 })
                 .catch((err) => {

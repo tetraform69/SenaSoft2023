@@ -45,7 +45,6 @@ export default {
         return {
             rutas: [],
             ruta_id: 0,
-            nombre: "",
             canvas: null,
             ctx: null,
             x: 0,
@@ -55,23 +54,27 @@ export default {
             canvasWidht: 0,
 
             //variables algoritmo
+            listaNodos: [],
+            nodoInicial: "",
         };
     },
     methods: {
         mejorRuta(){
-            
+            // lista de todos los nodos de la ruta.
+            //traer el nodo incial de la ruta.
+            //peso del nodo de cada conexion.
         },
         obtenerGrafo() {
             axios.get(`/api/ruta?id=${this.ruta_id}`).then((r) => {
                 console.log(r.data);
                 this.ctx.reset();
                 this.grid()
+                this.nodoInicial = r.data.inicio
+                this.listaNodos = r.data.ubicaciones
                 r.data.ubicaciones.forEach((node) => {
-                    console.log(node);
                     this.drawNode(node);
                 });
                 r.data.conexiones.forEach((conexion) => {
-                    console.log(conexion);
                     this.drawLine(conexion);
                 });
             });
@@ -91,7 +94,6 @@ export default {
         drawLine(conexion) {
             var x_cero = 350;
             var y_cero = 350;
-            console.log(conexion);
             this.ctx.beginPath();
             this.ctx.moveTo(
                 x_cero + (conexion.ubicacion1.posicionx * this.grid_size),
