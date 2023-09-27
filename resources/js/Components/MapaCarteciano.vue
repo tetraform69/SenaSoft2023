@@ -57,10 +57,10 @@
                 </div>
                 <div class="position">
                     <div>
-                        {{ x }}
+                        X: {{ x }}
                     </div>
                     <div>
-                        {{ y }}
+                        Y: {{ y }}
                     </div>
                 </div>
             </form>
@@ -69,7 +69,9 @@
         <div class="cintent-plain w-4/5">
             <canvas
                 id="lienzo1"
-                class="plano w-full"
+                class="plano"
+                height="300"
+                width="700"
                 @mousemove="showCoordinates"
                 @click="openDialog"
             ></canvas>
@@ -139,18 +141,20 @@ export default {
     },
     methods: {
         openDialog(e) {
-            this.x = e.offsetX - 512;
-            this.y = -(e.offsetY - 250);
+            let c = document.getElementById("lienzo1");
+            this.x = e.pageX - c.offsetLeft;
+            this.y = e.pageY - c.offsetTop;
             this.dialog.showModal();
         },
-        openDialog(e) {
-            this.x = e.offsetX - 512;
-            this.y = -(e.offsetY - 250);
-            this.dialog.showModal();
-        },
+        // openDialog(e) {
+        //     this.x = e.offsetX - 512;
+        //     this.y = -(e.offsetY - 250);
+        //     this.dialog.showModal();
+        // },
         showCoordinates(e) {
-            this.x = e.offsetX - 512;
-            this.y = -(e.offsetY - 250);
+            let c = document.getElementById("lienzo1");
+            this.x = e.pageX - c.offsetLeft;
+            this.y = e.pageY - c.offsetTop;
         },
         draw() {
             this.canvas.beginPath();
@@ -172,10 +176,10 @@ export default {
                 });
         },
         drawNode(nodo) {
-            let xnode = nodo.posicionx + 512;
-            let ynode = 250 - nodo.posiciony;
+            let xnode = nodo.posicionx;
+            let ynode = nodo.posiciony;
             this.canvas.beginPath();
-            this.canvas.arc(xnode, ynode, 5, 0, 2 * Math.PI, false);
+            this.canvas.arc(this.x, this.y, 2, 0, 2 * Math.PI, false);
             this.canvas.stroke();
 
             this.canvas.font = "20px serif";
@@ -228,12 +232,12 @@ export default {
             console.log(conexion);
             this.canvas.beginPath();
             this.canvas.moveTo(
-                conexion.nodo_a.posicionx + 512,
-                250 - conexion.nodo_a.posiciony
+                conexion.nodo_a.posicionx,
+                conexion.nodo_a.posiciony
             ); // lo ubicó para iniciar el dibujo
             this.canvas.lineTo(
-                conexion.nodo_b.posicionx + 512,
-                250 - conexion.nodo_b.posiciony
+                conexion.nodo_b.posicionx,
+                conexion.nodo_b.posiciony
             ); // trazo la linea hasta este punto
             this.canvas.stroke();
         },
@@ -244,8 +248,8 @@ export default {
         },
         getCanvasHW() {
             let c = document.getElementById("lienzo1");
-            this.canvasHeight = c.height/2;
-            this.canvasWidht = c.width/2;
+            this.canvasHeight = c.height;
+            this.canvasWidht = c.width;
             console.log(this.canvasHeight);
             console.log(this.canvasWidht);
         },
@@ -259,26 +263,24 @@ export default {
         this.canvas.strokeStyle = "#202020";
         this.canvas.lineWidth = 0.5
 
-        //EJEX
-        this.canvas.beginPath(); // Pongo el lápiz
-        this.canvas.moveTo(this.canvasWidht, 0); // lo ubicó para iniciar el dibujo
-        this.canvas.lineTo(this.canvasWidht, this.canvasWidht); // trazo la linea hasta este punto
-        this.canvas.stroke(); // levanto el lápiz
-        this.canvas.closePath(); // me alisto para realizar otra parte del dibujo
-        //EJE Y
-        this.canvas.beginPath(); // Pongo el lápiz
-        this.canvas.moveTo(0, this.canvasHeight); // lo ubicó para iniciar el dibujo
-        this.canvas.lineTo(this.canvasWidht*2, this.canvasHeight); // trazo la linea hasta este punto
-        this.canvas.stroke(); // levanto el lápiz
-        this.canvas.closePath(); // me alisto para realizar otra parte del dibujo
+        // //EJEX
+        // this.canvas.beginPath(); // Pongo el lápiz
+        // this.canvas.moveTo(this.canvasWidht/2, 0); // lo ubicó para iniciar el dibujo
+        // this.canvas.lineTo(this.canvasWidht/2, this.canvasWidht/2); // trazo la linea hasta este punto
+        // this.canvas.stroke(); // levanto el lápiz
+        // this.canvas.closePath(); // me alisto para realizar otra parte del dibujo
+        // //EJE Y
+        // this.canvas.beginPath(); // Pongo el lápiz
+        // this.canvas.moveTo(0, this.canvasHeight/2); // lo ubicó para iniciar el dibujo
+        // this.canvas.lineTo(this.canvasWidht, this.canvasHeight/2); // trazo la linea hasta este punto
+        // this.canvas.stroke(); // levanto el lápiz
+        // this.canvas.closePath(); // me alisto para realizar otra parte del dibujo
     },
 };
 </script>
 
 <style scoped>
 .plano {
-    background-image: url("../../../public/img/fondo (2).jpg");
-    background-position: center;
     border: 1px solid #202020;
     border-radius: 5px;
 }
