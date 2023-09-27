@@ -11,7 +11,7 @@ class UpdateconexionRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,10 @@ class UpdateconexionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'ruta' => ['integer'],
+            'peso' => ['integer'],
+            'nodo_a' => ['integer'],
+            'nodo_b' => ['integer'],
         ];
     }
 }

@@ -9,7 +9,7 @@ use App\Http\Requests\UpdateubicacionRequest;
 class UbicacionController extends Controller
 {
     /**
-     * Mostrar ubicaciones.
+     * Most ubicacion.
      */
     public function read()
     {

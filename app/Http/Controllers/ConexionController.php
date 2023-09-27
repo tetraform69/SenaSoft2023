@@ -9,58 +9,42 @@ use App\Http\Requests\UpdateconexionRequest;
 class ConexionController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Mostrar conexiones.
      */
-    public function index()
+    public function read()
     {
-        //
+        if(isset($_GET["id"])){
+            return conexion::find($_GET["id"]);
+        } else {
+            return conexion::all();
+        }
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Crear conexion.
      */
-    public function create()
+    public function create(StoreconexionRequest $request)
     {
-        //
+        conexion::create($request->all());
+        
+        return "conexion creada";
     }
-
+    
     /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreconexionRequest $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(conexion $conexion)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(conexion $conexion)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
+     * Actualizar conexion.
      */
     public function update(UpdateconexionRequest $request, conexion $conexion)
     {
-        //
+        conexion::findOrFail($conexion->id)->update($request->all());
+        return "conexion actualizada";
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Eliminar conexion.
      */
-    public function destroy(conexion $conexion)
+    public function delete(conexion $conexion)
     {
-        //
+        conexion::findOrFail($conexion->id)->delete();
+        return "conexion eliminada";
     }
 }

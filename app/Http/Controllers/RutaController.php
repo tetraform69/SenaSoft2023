@@ -9,58 +9,42 @@ use App\Http\Requests\UpdaterutaRequest;
 class RutaController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Mostrar rutas.
      */
-    public function index()
+    public function read()
     {
-        //
+        if(isset($_GET["id"])){
+            return ruta::find($_GET["id"]);
+        } else {
+            return ruta::all();
+        }
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Crear ruta.
      */
-    public function create()
+    public function create(StorerutaRequest $request)
     {
-        //
-    }
+        ruta::create($request->all());
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StorerutaRequest $request)
-    {
-        //
+        return "ruta creada";
     }
-
+    
     /**
-     * Display the specified resource.
-     */
-    public function show(ruta $ruta)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(ruta $ruta)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
+     * Actualizar ruta.
      */
     public function update(UpdaterutaRequest $request, ruta $ruta)
     {
-        //
+        ruta::findOrFail($ruta->id)->update($request->all());
+        return "ruta actualizada";
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Eliminar ruta.
      */
-    public function destroy(ruta $ruta)
+    public function delete(ruta $ruta)
     {
-        //
+        ruta::findOrFail($ruta->id)->delete();
+        return "ruta eliminada";
     }
 }

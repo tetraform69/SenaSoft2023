@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('ubicacions', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->integer("nombre");
+            $table->string("nombre")->unique();
             $table->integer("posicionx");
             $table->integer("posiciony");
         });

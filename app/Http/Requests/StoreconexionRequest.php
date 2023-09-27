@@ -11,7 +11,7 @@ class StoreconexionRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,9 @@ class StoreconexionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'peso' => ['integer'],
+            'nodo_a' => ['integer'],
+            'nodo_b' => ['integer'],
         ];
     }
 }
