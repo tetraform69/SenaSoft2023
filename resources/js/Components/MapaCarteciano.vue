@@ -57,18 +57,27 @@
         </div>
     </dialog>
 
-    <dialog id="nodoInicial">
-        <label for="nodo_inicial">Seleccione nodo Inicial:</label>
-        <select name="nodo_inicial" id="nodo_inicial" v-model="nodoI">
-            <option :value="item" v-for="(item, index) in nodos" :key="index">
-                {{ index + 1 }} - {{ item.nombre }}
-            </option>
-        </select>
-        <button @click="guardarRutas">Agregar Ubicacion</button>
+    <dialog id="nodoInicial" class="rounded-md p-3">
+        <div class="flex flex-col gap-3">
+            <label for="nodo_inicial">Seleccione nodo Inicial:</label>
+            <select name="nodo_inicial" id="nodo_inicial" v-model="nodoI" class="rounded-md">
+                <option :value="item" v-for="(item, index) in nodos" :key="index">
+                    {{ index + 1 }} - {{ item.nombre }}
+                </option>
+            </select>
+            <div class="flex gap-3">
+                <button @click="guardarRuta"
+                    class="inline-flex items-center px-4 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">Agregar
+                    Ubicacion</button>
+                <button @click="dialogNodoInicial.close()"
+                    class="inline-flex items-center px-4 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                    cancelar </button>
+            </div>
+        </div>
     </dialog>
 
     <div class="flex justify-center mt-4">
-        <button @click="dialogRutas"
+        <button @click="openNodoInicial"
             class="inline-flex items-center px-4 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
             Guardar rutas
         </button>
@@ -81,6 +90,7 @@ export default {
     data() {
         return {
             dialog: null,
+            dialogNodoInicial: null,
             nombre: "",
             canvas: null,
             ctx: null,
@@ -101,11 +111,9 @@ export default {
         openDialog(e) {
             this.dialog.showModal();
         },
-        // openDialog(e) {
-        //     this.x = e.offsetX - 512;
-        //     this.y = -(e.offsetY - 250);
-        //     this.dialog.showModal();
-        // },
+        openNodoInicial(e) {
+            this.dialogNodoInicial.showModal();
+        },
         obtenerNodos() {
             axios
                 .get("/api/nodos/")
@@ -123,10 +131,10 @@ export default {
         drawNode(nodo) {
             var x_cero = 350;
             var y_cero = 350;
-            let xnode = nodo.posicionx * this.grid_size;
-            let ynode = nodo.posiciony * this.grid_size;
+            let xnode = x_cero + (nodo.posicionx * this.grid_size);
+            let ynode = y_cero - (nodo.posiciony * this.grid_size);
             this.ctx.beginPath();
-            this.ctx.arc(this.x, this.y, 2, 0, 2 * Math.PI, false);
+            this.ctx.arc(xnode, ynode, 2, 0, 2 * Math.PI, false);
             this.ctx.stroke();
 
             this.ctx.font = "20px serif";
@@ -161,8 +169,8 @@ export default {
                     nodo_a: this.nodoA,
                     nodo_b: this.nodoB,
                 };
-                // console.log(this.conexiones);
                 this.conexiones.push(data2);
+                console.log(this.conexiones);
                 this.drawLine(data2);
                 // axios
                 //     .post("/api/conexion/", data)
@@ -176,21 +184,24 @@ export default {
             }
         },
         drawLine(conexion) {
+            var x_cero = 350;
+            var y_cero = 350;
             console.log(conexion);
             this.ctx.beginPath();
             this.ctx.moveTo(
-                conexion.nodo_a.posicionx,
-                conexion.nodo_a.posiciony
+                x_cero + (conexion.nodo_a.posicionx * this.grid_size),
+                y_cero - (conexion.nodo_a.posiciony * this.grid_size)
             ); // lo ubicó para iniciar el dibujo
             this.ctx.lineTo(
-                conexion.nodo_b.posicionx,
-                conexion.nodo_b.posiciony
+                x_cero + (conexion.nodo_b.posicionx * this.grid_size),
+                y_cero - (conexion.nodo_b.posiciony * this.grid_size)
             ); // trazo la linea hasta este punto
             this.ctx.stroke();
         },
-        guardarRutas() {
-            dataR = {
+        guardarRuta() {
+            data = {
                 nodo_inicial: this.nodo_inicial,
+                ubicaciones: this.nodos,
             };
         },
         getCanvasHW() {
@@ -274,22 +285,8 @@ export default {
         this.ctx = c.getContext("2d");
         this.canvas = c;
         this.dialog = document.getElementById("dialog");
+        this.dialogNodoInicial = document.getElementById("nodoInicial");
         this.grid()
-        // this.ctx.strokeStyle = "#202020";
-        // this.ctx.lineWidth = 0.5
-
-        // //EJEX
-        // this.ctx.beginPath(); // Pongo el lápiz
-        // this.ctx.moveTo(this.canvasWidht/2, 0); // lo ubicó para iniciar el dibujo
-        // this.ctx.lineTo(this.canvasWidht/2, this.canvasWidht/2); // trazo la linea hasta este punto
-        // this.ctx.stroke(); // levanto el lápiz
-        // this.ctx.closePath(); // me alisto para realizar otra parte del dibujo
-        // //EJE Y
-        // this.ctx.beginPath(); // Pongo el lápiz
-        // this.ctx.moveTo(0, this.canvasHeight/2); // lo ubicó para iniciar el dibujo
-        // this.ctx.lineTo(this.canvasWidht, this.canvasHeight/2); // trazo la linea hasta este punto
-        // this.ctx.stroke(); // levanto el lápiz
-        // this.ctx.closePath(); // me alisto para realizar otra parte del dibujo
     },
 };
 </script>
@@ -304,5 +301,4 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-}
-</style>
+}</style>

@@ -75,29 +75,39 @@ class RutaController extends Controller
     {
         $ruta = new ruta;
         $conexiones = $request->input("conexiones");
-        $ubicaciones = $request->input("ubicaciones");
         $nodo_inicial = $request->input("nodo_inicial");
 
+        $ubicaciones = [];
+        
         foreach($conexiones as $c){
             $conexion = new conexion;
 
             $conexion->peso = $c->peso;
-            $conexion->nodo_a = $c->nodo_a;
-            $conexion->nodo_b = $c->nodo_b;
 
+            $ubicacion1 = new ubicacion;
+            $ubicacion2 = new ubicacion;
+
+            $ubicacion1->nombre = $c->nodo_a->nombre;
+            $ubicacion1->posicionx = $c->nodo_a->posicionx;
+            $ubicacion1->posiciony = $c->nodo_a->posiciony;
+            
+            $ubicacion2->nombre = $c->nodo_a->nombre;
+            $ubicacion2->posicionx = $c->nodo_a->posicionx;
+            $ubicacion2->posiciony = $c->nodo_a->posiciony;
+
+            if (!in_array($ubicacion1, $ubicaciones, false)) {
+                $ubicacion1->save();
+                $ubicaciones[] = $ubicacion1;
+            }
+            if (!in_array($ubicacion2, $ubicaciones, false)) {
+                $ubicacion2->save();
+                $ubicaciones[] = $ubicacion2;
+            }
+
+            
             $ruta->conexiones()->save($conexion);
         }
-
-        foreach($ubicaciones as $u){
-            $ubicacion = new ubicacion;
-
-            $ubicacion->nombre = $u->nombre;
-            $ubicacion->posicionx = $u->posicionx;
-            $ubicacion->posiciony = $u->posiciony;
-
-            $ubicacion->save();
-        }
-
+        
         $ruta->nodo_inicial = $nodo_inicial;
         
         return "ruta creada";
