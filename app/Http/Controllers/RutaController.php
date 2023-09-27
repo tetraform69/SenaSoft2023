@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ruta;
 use App\Http\Requests\StorerutaRequest;
 use App\Http\Requests\UpdaterutaRequest;
+use App\Models\conexion;
 use App\Models\ubicacion;
 use stdClass;
 
@@ -72,12 +73,33 @@ class RutaController extends Controller
      */
     public function create(StorerutaRequest $request)
     {
-        ruta::create($request->all());
+        $ruta = new ruta;
         $conexiones = $request->input("conexiones");
         $ubicaciones = $request->input("ubicaciones");
+        $nodo_inicial = $request->input("nodo_inicial");
 
+        foreach($conexiones as $c){
+            $conexion = new conexion;
+
+            $conexion->peso = $c->peso;
+            $conexion->nodo_a = $c->nodo_a;
+            $conexion->nodo_b = $c->nodo_b;
+
+            $ruta->conexiones()->save($conexion);
+        }
+
+        foreach($ubicaciones as $u){
+            $ubicacion = new ubicacion;
+
+            $ubicacion->nombre = $u->nombre;
+            $ubicacion->posicionx = $u->posicionx;
+            $ubicacion->posiciony = $u->posiciony;
+
+            $ubicacion->save();
+        }
+
+        $ruta->nodo_inicial = $nodo_inicial;
         
-
         return "ruta creada";
     }
 

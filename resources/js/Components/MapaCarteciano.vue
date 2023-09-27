@@ -1,23 +1,102 @@
 <template>
-    <div class="my-3 flex justify-center ">
-            <button @click="obtenerNodos" class="bg-slate-200 shadow-lg shadow-slate-300 rounded-full py-2 px-3">get nodos</button>
+    <div class="flex flex-row gap-5">
+        <div class="bg-slate-300 mt-4 rounded-md p-3 w-1/5">
+            <form>
+                <select
+                    name="nodo_A"
+                    id="nodo_A"
+                    v-model="nodoA"
+                    class="rounded-md mb-5 w-full"
+                >
+                    <option value="0" selected disabled>
+                        Seleccione nodo A
+                    </option>
+                    <option
+                        :value="item"
+                        v-for="(item, index) in nodos"
+                        :key="index"
+                    >
+                        {{ index + 1 }} - {{ item.nombre }}
+                    </option>
+                </select>
+                <select
+                    name="nodo_B"
+                    id="nodo_B"
+                    v-model="nodoB"
+                    class="rounded-md mb-5 w-full"
+                >
+                    <option value="0" selected disabled>
+                        Seleccione nodo B
+                    </option>
+                    <option
+                        :value="item2"
+                        v-for="(item2, index) in nodos"
+                        :key="index"
+                    >
+                        {{ index + 1 }} - {{ item2.nombre }}
+                    </option>
+                </select>
+                <div class="flex flex-row flex justify-center">
+                    <input
+                        type="number"
+                        v-model="peso"
+                        min="1"
+                        id="peso"
+                        class="rounded-md w-full mb-5"
+                        placeholder="Ingrese Peso (distancia):"
+                    />
+                </div>
+                <div class="flex flex-row flex justify-center">
+                    <button
+                        type="button"
+                        @click="agregarConexion"
+                        class="inline-flex items-center px-4 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
+                    >
+                        Agregar Conexion
+                    </button>
+                </div>
+                <div class="position">
+                    <div>
+                        {{ x }}
+                    </div>
+                    <div>
+                        {{ y }}
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="cintent-plain w-4/5">
+            <canvas
+                id="lienzo1"
+                class="plano w-full"
+                @mousemove="showCoordinates"
+                @click="openDialog"
+            ></canvas>
+        </div>
     </div>
-    <span>{{ x }}, {{ y }}</span>
-    <div class="cintent-plain">
-        <canvas
-            id="lienzo1"
-            width="1024"
-            height="500"
-            class="plano"
-            @mousemove="showCoordinates"
-            @click="openDialog"
-        ></canvas>
-    </div>
-    <dialog id="dialog">
-        <label for="">Nombre de la ubicacion: </label>
-        <input v-model="nombre" />
-        <button @click="agregarNodos">Agregar Ubicacion</button>
+
+    <dialog id="dialog" class="rounded-md p-3">
+        <div class="flex flex-col gap-3">
+            <label for="">Nombre de la ubicacion: </label>
+            <input v-model="nombre" class="rounded-md" />
+            <div class="flex gap-3">
+                <button
+                    @click="agregarNodos"
+                    class="inline-flex items-center px-4 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
+                >
+                    agregar
+                </button>
+                <button
+                    @click="dialog.close()"
+                    class="inline-flex items-center px-4 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
+                >
+                    cancelar
+                </button>
+            </div>
+        </div>
     </dialog>
+
     <dialog id="nodoInicial">
         <label for="nodo_inicial">Seleccione nodo Inicial:</label>
         <select name="nodo_inicial" id="nodo_inicial" v-model="nodoI">
@@ -27,49 +106,14 @@
         </select>
         <button @click="guardarRutas">Agregar Ubicacion</button>
     </dialog>
-    <br />
-    <hr />
-    <br />
-    <div>
-        <form>
-            <div class="">
-                <label for="nodo_A">selecione nodo 1:</label>
-                <select name="nodo_A" id="nodo_A" v-model="nodoA">
-                    <option
-                        :value="item"
-                        v-for="(item, index) in nodos"
-                        :key="index"
-                    >
-                        {{ index + 1 }} - {{ item.nombre }}
-                    </option>
-                </select>
-            </div>
-            <div class="">
-                <label for="nodo_B">selecione nodo 2:</label>
-                <select name="nodo_B" id="nodo_B" v-model="nodoB">
-                    <option
-                        :value="item2"
-                        v-for="(item2, index) in nodos"
-                        :key="index"
-                    >
-                        {{ index + 1 }} - {{ item2.nombre }}
-                    </option>
-                </select>
-            </div>
-            <div>
-                <label for="peso">Ingrese Peso (distancia) : </label>
-                <input type="number" v-model="peso" min="1" id="peso" />
-            </div>
-            <div>
-                <button type="button" @click="agregarConexion">
-                    Agregar Conexion
-                </button>
-            </div>
-        </form>
-    </div>
-    <br><br>
-    <div class="flex jusfity-center">
-        <button @click="dialogRutas">Guardar rutas</button>
+
+    <div class="flex justify-center mt-4">
+        <button
+            @click="dialogRutas"
+            class="inline-flex items-center px-4 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
+        >
+            Guardar rutas
+        </button>
     </div>
 </template>
 
@@ -89,6 +133,8 @@ export default {
             nodoI: 0,
             peso: "",
             conexiones: [],
+            canvasHeight: 0,
+            canvasWidht: 0,
         };
     },
     methods: {
@@ -131,6 +177,9 @@ export default {
             this.canvas.beginPath();
             this.canvas.arc(xnode, ynode, 5, 0, 2 * Math.PI, false);
             this.canvas.stroke();
+
+            this.canvas.font = "20px serif";
+            this.canvas.fillText(nodo.nombre, xnode - 10, ynode - 10);
         },
         //Agrega nodos a un arrelgo.
         agregarNodos() {
@@ -190,27 +239,36 @@ export default {
         },
         guardarRutas() {
             dataR = {
-                nodo_inicial: this.nodoI
-            }
+                nodo_inicial: this.nodoI,
+            };
+        },
+        getCanvasHW() {
+            let c = document.getElementById("lienzo1");
+            this.canvasHeight = c.height/2;
+            this.canvasWidht = c.width/2;
+            console.log(this.canvasHeight);
+            console.log(this.canvasWidht);
         },
     },
     //Aqui se monta el plano cartesiano en un canvas.
     mounted() {
-        var c = document.getElementById("lienzo1");
+        this.getCanvasHW()
+        let c = document.getElementById("lienzo1");
         this.dialog = document.getElementById("dialog");
         this.canvas = c.getContext("2d");
-        this.canvas.strokeStyle = "rgb(0,0,0)";
+        this.canvas.strokeStyle = "#202020";
+        this.canvas.lineWidth = 0.5
 
         //EJEX
         this.canvas.beginPath(); // Pongo el lápiz
-        this.canvas.moveTo(512, 0); // lo ubicó para iniciar el dibujo
-        this.canvas.lineTo(512, 512); // trazo la linea hasta este punto
+        this.canvas.moveTo(this.canvasWidht, 0); // lo ubicó para iniciar el dibujo
+        this.canvas.lineTo(this.canvasWidht, this.canvasWidht); // trazo la linea hasta este punto
         this.canvas.stroke(); // levanto el lápiz
         this.canvas.closePath(); // me alisto para realizar otra parte del dibujo
         //EJE Y
         this.canvas.beginPath(); // Pongo el lápiz
-        this.canvas.moveTo(0, 250); // lo ubicó para iniciar el dibujo
-        this.canvas.lineTo(1024, 250); // trazo la linea hasta este punto
+        this.canvas.moveTo(0, this.canvasHeight); // lo ubicó para iniciar el dibujo
+        this.canvas.lineTo(this.canvasWidht*2, this.canvasHeight); // trazo la linea hasta este punto
         this.canvas.stroke(); // levanto el lápiz
         this.canvas.closePath(); // me alisto para realizar otra parte del dibujo
     },
@@ -229,5 +287,13 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.position {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    gap: 10px;
+    width: 100%;
 }
 </style>
