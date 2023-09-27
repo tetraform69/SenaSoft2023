@@ -1,5 +1,7 @@
 <template>
-    <button @click="obtenerNodos">get nodos</button>
+    <div class="my-3 flex justify-center ">
+            <button @click="obtenerNodos" class="bg-slate-200 shadow-lg shadow-slate-300 rounded-full py-2 px-3">get nodos</button>
+    </div>
     <span>{{ x }}, {{ y }}</span>
     <div class="cintent-plain">
         <canvas
@@ -16,29 +18,40 @@
         <input v-model="nombre" />
         <button @click="agregarNodos">Agregar Ubicacion</button>
     </dialog>
+    <dialog id="nodoInicial">
+        <label for="nodo_inicial">Seleccione nodo Inicial:</label>
+        <select name="nodo_inicial" id="nodo_inicial" v-model="nodoI">
+            <option :value="item" v-for="(item, index) in nodos" :key="index">
+                {{ index + 1 }} - {{ item.nombre }}
+            </option>
+        </select>
+        <button @click="guardarRutas">Agregar Ubicacion</button>
+    </dialog>
     <br />
     <hr />
     <br />
     <div>
         <form>
-            <div>
-                <label for="nodo_A">selecione nodo 1: {{  nodoA }} </label>
+            <div class="">
+                <label for="nodo_A">selecione nodo 1:</label>
                 <select name="nodo_A" id="nodo_A" v-model="nodoA">
                     <option
-                        :value="item.id"
+                        :value="item"
                         v-for="(item, index) in nodos"
-                        :key="index">
+                        :key="index"
+                    >
                         {{ index + 1 }} - {{ item.nombre }}
                     </option>
                 </select>
             </div>
-            <div>
-                <label for="nodo_B">selecione nodo 2: {{  nodoB }}</label>
+            <div class="">
+                <label for="nodo_B">selecione nodo 2:</label>
                 <select name="nodo_B" id="nodo_B" v-model="nodoB">
                     <option
-                        :value="item2.id"
+                        :value="item2"
                         v-for="(item2, index) in nodos"
-                        :key="index">
+                        :key="index"
+                    >
                         {{ index + 1 }} - {{ item2.nombre }}
                     </option>
                 </select>
@@ -54,6 +67,10 @@
             </div>
         </form>
     </div>
+    <br><br>
+    <div class="flex jusfity-center">
+        <button @click="dialogRutas">Guardar rutas</button>
+    </div>
 </template>
 
 <script>
@@ -67,13 +84,19 @@ export default {
             x: 0,
             y: 0,
             nodos: [],
-            nodoA: "",
-            nodoB: "",
+            nodoA: 0,
+            nodoB: 0,
+            nodoI: 0,
             peso: "",
             conexiones: [],
         };
     },
     methods: {
+        openDialog(e) {
+            this.x = e.offsetX - 512;
+            this.y = -(e.offsetY - 250);
+            this.dialog.showModal();
+        },
         openDialog(e) {
             this.x = e.offsetX - 512;
             this.y = -(e.offsetY - 250);
@@ -133,13 +156,14 @@ export default {
             if (this.nodoA === this.nodoB) {
                 alert("No puede crear una conexion utilizando el mismo nodo");
             } else {
-                let data = {
+                let data2 = {
                     peso: this.peso,
                     nodo_a: this.nodoA,
                     nodo_b: this.nodoB,
                 };
-                this.conexiones.push(data);
                 // console.log(this.conexiones);
+                this.conexiones.push(data2);
+                this.drawLine(data2);
                 // axios
                 //     .post("/api/conexion/", data)
                 //     .then((rest) => {
@@ -149,6 +173,24 @@ export default {
                 //     .catch((error) => {
                 //         console.error(error);
                 //     });
+            }
+        },
+        drawLine(conexion) {
+            console.log(conexion);
+            this.canvas.beginPath();
+            this.canvas.moveTo(
+                conexion.nodo_a.posicionx + 512,
+                250 - conexion.nodo_a.posiciony
+            ); // lo ubicó para iniciar el dibujo
+            this.canvas.lineTo(
+                conexion.nodo_b.posicionx + 512,
+                250 - conexion.nodo_b.posiciony
+            ); // trazo la linea hasta este punto
+            this.canvas.stroke();
+        },
+        guardarRutas() {
+            dataR = {
+                nodo_inicial: this.nodoI
             }
         },
     },
@@ -179,6 +221,8 @@ export default {
 .plano {
     background-image: url("../../../public/img/fondo (2).jpg");
     background-position: center;
+    border: 1px solid #202020;
+    border-radius: 5px;
 }
 
 .cintent-plain {

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ConexionController;
+use App\Http\Controllers\RutaController;
 use App\Http\Controllers\UbicacionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -26,4 +27,7 @@ Route::middleware('api')->group(function () {
 
     Route::post('/conexion',[ConexionController::class, 'create']);
     Route::get('/conexion',[ConexionController::class, 'read']);
+    
+    
+    Route::get('/ruta',[RutaController::class, 'read']);
 });

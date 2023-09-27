@@ -16,4 +16,9 @@ class ruta extends Model
     protected $fillable = [
         'nodo_inicial',
     ];
+
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
 }

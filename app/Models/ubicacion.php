@@ -14,4 +14,9 @@ class ubicacion extends Model
         'posicionx',
         'posiciony',
     ];
+
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
 }
