@@ -79,12 +79,17 @@ export default {
             );
             this.optimusPrime.push(nextnode);
 
-            for (let i = 0; i < this.listaNodos.length - 1; i++) {
+            for (let i = 0; i < this.listaNodos.length - 2; i++) {
                 conexiones = this.getConexiones(nextnode);
                 nextnode = this.selectNextUbicacion(nextnode, conexiones);
                 this.optimusPrime.push(nextnode);
             }
 
+            console.log(this.optimusPrime);
+            for (let i = 0; i < this.optimusPrime.length-1; i++) {
+                this.drawLineNode(this.optimusPrime[i], this.optimusPrime[i+1])
+                
+            }
         },
         selectNextUbicacion(nodo, conexion) {
             let peso = undefined;
@@ -156,6 +161,7 @@ export default {
                 r.data.conexiones.forEach((conexion) => {
                     this.drawLine(conexion);
                 });
+                this.optimusPrime = []
             });
         },
         drawNode(nodo) {
@@ -181,6 +187,21 @@ export default {
             this.ctx.lineTo(
                 x_cero + conexion.ubicacion2.posicionx * this.grid_size,
                 y_cero - conexion.ubicacion2.posiciony * this.grid_size
+            ); // trazo la linea hasta este punto
+            this.ctx.stroke();
+        },
+        drawLineNode(nodo1, nodo2) {
+            var x_cero = 350;
+            var y_cero = 350;
+            this.ctx.beginPath();
+            this.ctx.strokeStyle = "red";
+            this.ctx.moveTo(
+                x_cero + nodo1.posicionx * this.grid_size,
+                y_cero - nodo1.posiciony * this.grid_size
+            ); // lo ubicó para iniciar el dibujo
+            this.ctx.lineTo(
+                x_cero + nodo2.posicionx * this.grid_size,
+                y_cero - nodo2.posiciony * this.grid_size
             ); // trazo la linea hasta este punto
             this.ctx.stroke();
         },
