@@ -69,6 +69,8 @@ export default {
     methods: {
         mejorRuta() {
 
+            this.setInicial()
+
             this.optimusPrime.push(this.nodoInicial);
             let conexiones = this.getConexiones(this.nodoInicial);
             let nextnode = this.selectNextUbicacion(
@@ -76,15 +78,32 @@ export default {
                 conexiones
             );
             this.optimusPrime.push(nextnode);
+
+            conexiones = this.getConexiones(nextnode);
+            nextnode = this.selectNextUbicacion(nextnode, conexiones);
+            this.optimusPrime.push(nextnode);
+
+            conexiones = this.getConexiones(nextnode);
+            nextnode = this.selectNextUbicacion(nextnode, conexiones);
+            this.optimusPrime.push(nextnode);
+
+            conexiones = this.getConexiones(nextnode);
+            nextnode = this.selectNextUbicacion(nextnode, conexiones);
+            this.optimusPrime.push(nextnode);
+            
+            conexiones = this.getConexiones(nextnode);
+            nextnode = this.selectNextUbicacion(nextnode, conexiones);
+            this.optimusPrime.push(nextnode);
+
             // console.log(this.listaNodos);
-            // console.log(this.conexiones);
+            console.log(this.conexiones);
             console.log(this.optimusPrime);
         },
         selectNextUbicacion(nodo, conexion) {
             let peso = undefined;
             let nextNode = {};
             conexion.forEach((c) => {
-                if (c.ubicacion1.id == nodo.id && !c.ubicacion1.estado) {
+                if (c.ubicacion1.id == nodo.id && !c.ubicacion2.estado) {
                     if (c.peso < peso || !peso) {
                         nextNode = c.ubicacion2;
                         c.ubicacion1.estado = "visited";
@@ -100,21 +119,40 @@ export default {
                 }
             });
 
+            this.conexiones.forEach(c => {
+                if (c.ubicacion1.id == nodo.id){
+                    c.ubicacion1.estado = "visited";
+                }
+                if (c.ubicacion2.id == nodo.id){
+                    c.ubicacion2.estado = "visited";
+                }
+            })
+
+            
             nextNode.estado = "visited";
             return nextNode;
         },
         getConexiones(nodo) {
             let array = [];
             this.conexiones.forEach((c) => {
-                if (c.ubicacion1.id == nodo.id) {
+                if (c.ubicacion1.id == nodo.id && !c.ubicacion2.estado) {
                     array.push(c);
                 }
-                if (c.ubicacion2.id == nodo.id) {
+                if (c.ubicacion2.id == nodo.id && !c.ubicacion1.estado) {
                     array.push(c);
                 }
             });
-
             return array;
+        },
+        setInicial(){
+            this.conexiones.forEach((c) => {
+                if (c.ubicacion1.id == this.nodoInicial.id) {
+                    c.ubicacion1.estado = "visited"
+                }
+                if (c.ubicacion2.id == this.nodoInicial.id) {
+                    c.ubicacion2.estado = "visited"
+                }
+            });
         },
         obtenerGrafo() {
             axios.get(`/api/ruta?id=${this.ruta_id}`).then((r) => {
