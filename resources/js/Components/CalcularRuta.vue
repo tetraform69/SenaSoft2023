@@ -34,10 +34,11 @@
         </div>
         <div class="mx-3">
             <button
-                class="inline-flex items-center px-4 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
-                @click="mejorRuta"
+                class="xD inline-flex items-center px-4 py-3 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
+                @click="limpiar"
+                :disabled="!valid"
             >
-                Ver la ruta mas Eficiente
+                Limpiar Grafico
             </button>
         </div>
     </div>
@@ -58,6 +59,7 @@ export default {
             grid_size: 25,
             canvasHeight: 0,
             canvasWidht: 0,
+            valid: false,
 
             //variables algoritmo
             listaNodos: [],
@@ -68,8 +70,7 @@ export default {
     },
     methods: {
         mejorRuta() {
-
-            this.setInicial()
+            this.setInicial();
 
             this.optimusPrime.push(this.nodoInicial);
             let conexiones = this.getConexiones(this.nodoInicial);
@@ -86,10 +87,18 @@ export default {
             }
 
             console.log(this.optimusPrime);
-            for (let i = 0; i < this.optimusPrime.length-1; i++) {
-                this.drawLineNode(this.optimusPrime[i], this.optimusPrime[i+1])
-                
+            for (let i = 0; i < this.optimusPrime.length - 1; i++) {
+                setTimeout(() => {
+                    this.drawLineNode(
+                        this.optimusPrime[i],
+                        this.optimusPrime[i + 1]
+                    );
+                }, i * 300);
             }
+
+            setTimeout(() => {
+                this.valid = true
+            }, (this.optimusPrime.length - 1) * 300);
         },
         selectNextUbicacion(nodo, conexion) {
             let peso = undefined;
@@ -111,15 +120,14 @@ export default {
                 }
             });
 
-            this.conexiones.forEach(c => {
-                if (c.ubicacion1.id == nodo.id){
+            this.conexiones.forEach((c) => {
+                if (c.ubicacion1.id == nodo.id) {
                     c.ubicacion1.estado = "visited";
                 }
-                if (c.ubicacion2.id == nodo.id){
+                if (c.ubicacion2.id == nodo.id) {
                     c.ubicacion2.estado = "visited";
                 }
-            })
-
+            });
 
             nextNode.estado = "visited";
             return nextNode;
@@ -136,15 +144,21 @@ export default {
             });
             return array;
         },
-        setInicial(){
+        setInicial() {
             this.conexiones.forEach((c) => {
                 if (c.ubicacion1.id == this.nodoInicial.id) {
-                    c.ubicacion1.estado = "visited"
+                    c.ubicacion1.estado = "visited";
                 }
                 if (c.ubicacion2.id == this.nodoInicial.id) {
-                    c.ubicacion2.estado = "visited"
+                    c.ubicacion2.estado = "visited";
                 }
             });
+        },
+        limpiar() {
+            this.valid = false
+            this.ctx.reset();
+            this.grid();
+            this.ruta_id = 0;
         },
         obtenerGrafo() {
             axios.get(`/api/ruta?id=${this.ruta_id}`).then((r) => {
@@ -161,7 +175,8 @@ export default {
                 r.data.conexiones.forEach((conexion) => {
                     this.drawLine(conexion);
                 });
-                this.optimusPrime = []
+                this.optimusPrime = [];
+                this.mejorRuta();
             });
         },
         drawNode(nodo) {
@@ -180,6 +195,7 @@ export default {
             var x_cero = 350;
             var y_cero = 350;
             this.ctx.beginPath();
+            this.ctx.strokeStyle = "rgb(65 65 65 / 70%)";
             this.ctx.moveTo(
                 x_cero + conexion.ubicacion1.posicionx * this.grid_size,
                 y_cero - conexion.ubicacion1.posiciony * this.grid_size
@@ -194,7 +210,7 @@ export default {
             var x_cero = 350;
             var y_cero = 350;
             this.ctx.beginPath();
-            this.ctx.strokeStyle = "red";
+            this.ctx.strokeStyle = "rgb(255 0 0 / 70%)";
             this.ctx.moveTo(
                 x_cero + nodo1.posicionx * this.grid_size,
                 y_cero - nodo1.posiciony * this.grid_size
@@ -321,5 +337,9 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.xD:disabled{
+    background-color: rgb(203 213 225);
 }
 </style>
