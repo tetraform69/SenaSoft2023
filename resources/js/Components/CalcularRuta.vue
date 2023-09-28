@@ -79,25 +79,12 @@ export default {
             );
             this.optimusPrime.push(nextnode);
 
-            conexiones = this.getConexiones(nextnode);
-            nextnode = this.selectNextUbicacion(nextnode, conexiones);
-            this.optimusPrime.push(nextnode);
+            for (let i = 0; i < this.listaNodos.length - 1; i++) {
+                conexiones = this.getConexiones(nextnode);
+                nextnode = this.selectNextUbicacion(nextnode, conexiones);
+                this.optimusPrime.push(nextnode);
+            }
 
-            conexiones = this.getConexiones(nextnode);
-            nextnode = this.selectNextUbicacion(nextnode, conexiones);
-            this.optimusPrime.push(nextnode);
-
-            conexiones = this.getConexiones(nextnode);
-            nextnode = this.selectNextUbicacion(nextnode, conexiones);
-            this.optimusPrime.push(nextnode);
-            
-            conexiones = this.getConexiones(nextnode);
-            nextnode = this.selectNextUbicacion(nextnode, conexiones);
-            this.optimusPrime.push(nextnode);
-
-            // console.log(this.listaNodos);
-            console.log(this.conexiones);
-            console.log(this.optimusPrime);
         },
         selectNextUbicacion(nodo, conexion) {
             let peso = undefined;
@@ -128,7 +115,7 @@ export default {
                 }
             })
 
-            
+
             nextNode.estado = "visited";
             return nextNode;
         },
