@@ -1,7 +1,13 @@
 <template>
     <div class="flex flex-row gap-5">
         <div class="cintent-plain w-full">
-            <canvas id="lienzo1" class="plano" height="700" width="700" @click="openDialog"></canvas>
+            <canvas
+                id="lienzo1"
+                class="plano"
+                height="700"
+                width="700"
+                @click="openDialog"
+            ></canvas>
         </div>
     </div>
 
@@ -49,28 +55,76 @@ export default {
             ctx: null,
             x: 0,
             y: 0,
-            grid_size: 25,  
+            grid_size: 25,
             canvasHeight: 0,
             canvasWidht: 0,
 
             //variables algoritmo
             listaNodos: [],
             nodoInicial: "",
+            conexiones: [],
+            optimusPrime: [],
         };
     },
     methods: {
-        mejorRuta(){
-            // lista de todos los nodos de la ruta.
-            //traer el nodo incial de la ruta.
-            //peso del nodo de cada conexion.
+        mejorRuta() {
+
+            this.optimusPrime.push(this.nodoInicial);
+            let conexiones = this.getConexiones(this.nodoInicial);
+            let nextnode = this.selectNextUbicacion(
+                this.nodoInicial,
+                conexiones
+            );
+            this.optimusPrime.push(nextnode);
+            // console.log(this.listaNodos);
+            // console.log(this.conexiones);
+            console.log(this.optimusPrime);
+        },
+        selectNextUbicacion(nodo, conexion) {
+            let peso = undefined;
+            let nextNode = {};
+            conexion.forEach((c) => {
+                if (c.ubicacion1.id == nodo.id && !c.ubicacion1.estado) {
+                    if (c.peso < peso || !peso) {
+                        nextNode = c.ubicacion2;
+                        c.ubicacion1.estado = "visited";
+                        peso = c.peso;
+                    }
+                }
+                if (c.ubicacion2.id == nodo.id && !c.ubicacion1.estado) {
+                    if (c.peso < peso || !peso) {
+                        nextNode = c.ubicacion1;
+                        c.ubicacion2.estado = "visited";
+                        peso = c.peso;
+                    }
+                }
+            });
+
+            nextNode.estado = "visited";
+            return nextNode;
+        },
+        getConexiones(nodo) {
+            let array = [];
+            this.conexiones.forEach((c) => {
+                if (c.ubicacion1.id == nodo.id) {
+                    array.push(c);
+                }
+                if (c.ubicacion2.id == nodo.id) {
+                    array.push(c);
+                }
+            });
+
+            return array;
         },
         obtenerGrafo() {
             axios.get(`/api/ruta?id=${this.ruta_id}`).then((r) => {
                 console.log(r.data);
                 this.ctx.reset();
-                this.grid()
-                this.nodoInicial = r.data.inicio
-                this.listaNodos = r.data.ubicaciones
+                this.grid();
+                this.nodoInicial = r.data.inicio;
+                this.nodoInicial.estado = "visited";
+                this.listaNodos = r.data.ubicaciones;
+                this.conexiones = r.data.conexiones;
                 r.data.ubicaciones.forEach((node) => {
                     this.drawNode(node);
                 });
@@ -82,8 +136,8 @@ export default {
         drawNode(nodo) {
             var x_cero = 350;
             var y_cero = 350;
-            let xnode = x_cero + (nodo.posicionx * this.grid_size);
-            let ynode = y_cero - (nodo.posiciony * this.grid_size);
+            let xnode = x_cero + nodo.posicionx * this.grid_size;
+            let ynode = y_cero - nodo.posiciony * this.grid_size;
             this.ctx.beginPath();
             this.ctx.arc(xnode, ynode, 2, 0, 2 * Math.PI, false);
             this.ctx.stroke();
@@ -96,12 +150,12 @@ export default {
             var y_cero = 350;
             this.ctx.beginPath();
             this.ctx.moveTo(
-                x_cero + (conexion.ubicacion1.posicionx * this.grid_size),
-                y_cero - (conexion.ubicacion1.posiciony * this.grid_size)
+                x_cero + conexion.ubicacion1.posicionx * this.grid_size,
+                y_cero - conexion.ubicacion1.posiciony * this.grid_size
             ); // lo ubicó para iniciar el dibujo
             this.ctx.lineTo(
-                x_cero + (conexion.ubicacion2.posicionx * this.grid_size),
-                y_cero - (conexion.ubicacion2.posiciony * this.grid_size)
+                x_cero + conexion.ubicacion2.posicionx * this.grid_size,
+                y_cero - conexion.ubicacion2.posiciony * this.grid_size
             ); // trazo la linea hasta este punto
             this.ctx.stroke();
         },
@@ -117,8 +171,8 @@ export default {
         },
         grid() {
             this.ctx.beginPath();
-            var x_axis_size = this.canvasWidht - (2 * this.grid_size);
-            var y_axis_size = this.canvasHeight - (2 * this.grid_size);
+            var x_axis_size = this.canvasWidht - 2 * this.grid_size;
+            var y_axis_size = this.canvasHeight - 2 * this.grid_size;
             var x_cero = 350;
             var y_cero = 350;
             // Cuadriculas X
@@ -140,11 +194,11 @@ export default {
 
             // Eje x del 0
             this.ctx.beginPath();
-            this.ctx.moveTo(x_cero - (x_axis_size / 2), y_cero);
-            this.ctx.lineTo(x_cero + (x_axis_size / 2), y_cero);
+            this.ctx.moveTo(x_cero - x_axis_size / 2, y_cero);
+            this.ctx.lineTo(x_cero + x_axis_size / 2, y_cero);
             // Eje y del 0
-            this.ctx.moveTo(x_cero, y_cero - (y_axis_size / 2));
-            this.ctx.lineTo(x_cero, y_cero + (y_axis_size / 2));
+            this.ctx.moveTo(x_cero, y_cero - y_axis_size / 2);
+            this.ctx.lineTo(x_cero, y_cero + y_axis_size / 2);
             this.ctx.strokeStyle = "#000";
             this.ctx.lineWidth = 2;
             this.ctx.stroke();
@@ -154,32 +208,48 @@ export default {
 
             // Los de Y
             x = 0;
-            while (x * this.grid_size <= (y_axis_size / 2)) {
+            while (x * this.grid_size <= y_axis_size / 2) {
                 this.ctx.textAlign = "end";
-                this.ctx.fillText(x, x_cero - (this.grid_size / 4), y_cero - (this.grid_size * x));
+                this.ctx.fillText(
+                    x,
+                    x_cero - this.grid_size / 4,
+                    y_cero - this.grid_size * x
+                );
                 x++;
             }
 
             x = 1;
-            while (x * this.grid_size <= (y_axis_size / 2)) {
+            while (x * this.grid_size <= y_axis_size / 2) {
                 this.ctx.textAlign = "end";
-                this.ctx.fillText(-x, x_cero - (this.grid_size / 4), y_cero + (this.grid_size * x));
+                this.ctx.fillText(
+                    -x,
+                    x_cero - this.grid_size / 4,
+                    y_cero + this.grid_size * x
+                );
                 x++;
             }
 
             // Los de X
 
             x = 1;
-            while (x * this.grid_size <= (x_axis_size / 2)) {
+            while (x * this.grid_size <= x_axis_size / 2) {
                 this.ctx.textAlign = "end";
-                this.ctx.fillText(x, x_cero + (this.grid_size * x), y_cero + (this.grid_size / 2));
+                this.ctx.fillText(
+                    x,
+                    x_cero + this.grid_size * x,
+                    y_cero + this.grid_size / 2
+                );
                 x++;
             }
 
             x = 1;
-            while (x * this.grid_size <= (x_axis_size / 2)) {
+            while (x * this.grid_size <= x_axis_size / 2) {
                 this.ctx.textAlign = "end";
-                this.ctx.fillText(-x, x_cero - (this.grid_size * x), y_cero + (this.grid_size / 2));
+                this.ctx.fillText(
+                    -x,
+                    x_cero - this.grid_size * x,
+                    y_cero + this.grid_size / 2
+                );
                 x++;
             }
         },
@@ -189,7 +259,7 @@ export default {
         let c = document.getElementById("lienzo1");
         this.ctx = c.getContext("2d");
         this.canvas = c;
-        this.grid()
+        this.grid();
         this.obtenerRutas();
     },
 };

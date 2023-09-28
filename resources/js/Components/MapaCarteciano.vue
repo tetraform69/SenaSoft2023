@@ -263,7 +263,7 @@ export default {
                 .post("/api/ruta", data)
                 .then((res) => {
                     this.dialogNodoInicial.close()
-                    
+                    window.location = "/calcularRutas";
                 })
                 .catch((err) => {
                     console.error(err);

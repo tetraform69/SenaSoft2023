@@ -30,4 +30,5 @@ Route::middleware('api')->group(function () {
     
     Route::post('/ruta',[RutaController::class, 'create']);
     Route::get('/ruta',[RutaController::class, 'read']);
+    
 });
